@@ -1,0 +1,115 @@
+        $ENT->addJavaScript("
+        
+                var certtype  = '';
+                var callrc    = '';
+                var callmsg   = '';
+        
+                function initScript() {        
+                        popCalInit(); 
+                }                
+                function pre_func_savedata() {
+                
+                        validateCertificateLocation();
+                        
+                        if (callrc == false) {
+                                if (callmsg != '') {
+                                   alert(callmsg);
+                                }
+                                return 'CANCEL';
+                        } else {
+                                return true;
+                        }
+                
+                }                
+                function getnumval(v) {                        
+                        if (v == '') { 
+                                return 0;
+                        } else {
+                                return parseInt(v);
+                        }
+                }
+                function validateCertificateLocation() {
+                                
+                        callrc    = false;
+                        
+                        if (document.dataform.atgeneral_isdisabled.checked == true) {
+                                callrc    = true; 
+                                return;
+                        }
+
+                        var c1 = getnumval(document.dataform.atgeneral_intcol1.value);
+                        var c2 = getnumval(document.dataform.atgeneral_intcol2.value);
+                        var a1 = getnumval(document.dataform.atgeneral_intcol3.value);
+                        var a2 = getnumval(document.dataform.atgeneral_intcol4.value);
+                                
+                        var id = document.dataform.custom_entitykey.value;        
+                        
+                        // alert('call:certdetid='+certdetid+'&validate='+validate+'&range='+range);        
+                        
+                        var tBrowserInfo = getBrowserInfo();
+
+                        var xmlHttpReq = tBrowserInfo.xmlHttpReq;
+
+                        if (xmlHttpReq.overrideMimeType) {
+                                xmlHttpReq.overrideMimeType('text/xml');
+                        }
+
+                        xmlHttpReq.onreadystatechange = handleResponse; 
+
+                        var url = './runAjaxPhp.php?scripttype=validateCertificateLocation&id='+id+'&c1='+c1+'&c2='+c2+'&a1='+a1+'&a2='+a2;
+
+                        xmlHttpReq.open('GET', url, false);
+
+                        xmlHttpReq.send(null);
+
+                        if (tBrowserInfo.BrowserName != 'Internet Explorer') { // if sync AJAX call and browser NOT MSIE
+                                handleResponse();
+                        }
+
+                        function handleResponse() {
+                                if (xmlHttpReq.readyState == 4) {
+                                        if (xmlHttpReq.status == 200) {
+                                                
+                                                // result = xmlHttpReq.responseText;
+                                                
+                                                var result = unescape(xmlHttpReq.responseText);
+                                                
+                                                // alert('result:'+result);
+                                                
+                                                result = result.split('|');
+
+                                                if (result[0] === undefined) {
+                                                        result[0] = '';
+                                                }
+                                                if (result[1] === undefined) {
+                                                        result[1] = '';
+                                                }
+
+                                                result[0] = result[0].replace(/^\s+|\s+$/g, '') ;
+                                                result[1] = result[1].replace(/^\s+|\s+$/g, '') ;
+
+                                                if (result[0] == 'Ok') {
+                                                        if (result[1] == 'Y') {
+                                                                callrc    = true;
+                                                                 return true;
+                                                        } else {  
+                                                                  callrc    = false;
+                                                                  callmsg   = result[1];
+                                                                 return false;
+                                                        }
+                                                } else {
+                                                        alert('Error in validateCertificateLocation: '+result[1]);
+                                                        callrc    = false;
+                                                        return false;
+                                                }
+
+
+                                        } else {
+                                                alert('There was a problem with the request.');
+                                                callrc    = false;
+                                                return false;
+                                        }
+                                }
+                        }
+                }
+                ");
