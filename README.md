@@ -1,2 +1,2 @@
 # CRM-jarjestelma
-näytteitä työharjoittelussani käytetystä CRM-asiakkuudenhallintajärjestelmästä.
+näytteitä työharjoittelussani käytetystä CRM-asiakkuudenhallintajärjestelmästä. 
