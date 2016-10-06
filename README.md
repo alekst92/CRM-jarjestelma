@@ -1,2 +1,2 @@
 # CRM-jarjestelma
-php/javascript
+näytteitä työharjoittelussani käytetystä CRM-asiakkuudenhallintajärjestelmästä.
